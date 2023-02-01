@@ -6,6 +6,7 @@ from datetime import datetime
 FILE_NAME = "insurance.csv"
 TRAIN_FILE_NAME = "train.csv"
 TEST_FILE_NAME = "test.csv"
+REPORT_NAME = "report.yaml"
 
 class TrainingPipelineConfig:
     
@@ -23,6 +24,7 @@ class DataIngestionConfig:
             self.database_name="Insurance_DB"
             self.collection_name="Insurance_collection"
             self.data_ingestion_dir = os.path.join(training_pipeline_config.artifact_dir , "data_ingestion")
+            print('print--path --------')
             self.feature_store_file_path = os.path.join(self.data_ingestion_dir,"feature_store",FILE_NAME)
             self.train_file_path = os.path.join(self.data_ingestion_dir,"dataset",TRAIN_FILE_NAME)
             self.test_file_path = os.path.join(self.data_ingestion_dir,"dataset",TEST_FILE_NAME)
@@ -36,5 +38,16 @@ class DataIngestionConfig:
             return self.__dict__
         except Exception as e:
             raise InsuranceException(e, sys)
-class Datavalidation:
-    pass
+class DatavalidationConfig:
+    
+    def __init__(self, training_pipeline_config:TrainingPipelineConfig):
+        try:
+            self.data_validation_dir = os.path.join(training_pipeline_config.artifact_dir, "data_validations")
+            print(self.data_validation_dir, 'path---------')
+            
+            self.report_file_path = os.path.join(self.data_validation_dir, REPORT_NAME) # yaml, json, csv
+            self.missing_threshold:float = 0.2
+            self.base_file_path = os.path.join(os.getcwd(),'medicall.csv')
+            print(self.base_file_path, 'here==')
+        except Exception as e:
+            raise InsuranceException(e, sys)
