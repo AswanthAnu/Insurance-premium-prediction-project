@@ -7,6 +7,8 @@ FILE_NAME = "insurance.csv"
 TRAIN_FILE_NAME = "train.csv"
 TEST_FILE_NAME = "test.csv"
 REPORT_NAME = "report.yaml"
+TRANSFORMER_OBJECT_FILE_NAME = "transformer.pkl"
+TARGET_ENCODER_OBJECT_FILE_NAME = "target_encoder.pkl"
 
 class TrainingPipelineConfig:
     
@@ -24,7 +26,6 @@ class DataIngestionConfig:
             self.database_name="Insurance_DB"
             self.collection_name="Insurance_collection"
             self.data_ingestion_dir = os.path.join(training_pipeline_config.artifact_dir , "data_ingestion")
-            print('print--path --------')
             self.feature_store_file_path = os.path.join(self.data_ingestion_dir,"feature_store",FILE_NAME)
             self.train_file_path = os.path.join(self.data_ingestion_dir,"dataset",TRAIN_FILE_NAME)
             self.test_file_path = os.path.join(self.data_ingestion_dir,"dataset",TEST_FILE_NAME)
@@ -43,11 +44,17 @@ class DatavalidationConfig:
     def __init__(self, training_pipeline_config:TrainingPipelineConfig):
         try:
             self.data_validation_dir = os.path.join(training_pipeline_config.artifact_dir, "data_validations")
-            print(self.data_validation_dir, 'path---------')
-            
             self.report_file_path = os.path.join(self.data_validation_dir, REPORT_NAME) # yaml, json, csv
             self.missing_threshold:float = 0.2
             self.base_file_path = os.path.join(os.getcwd(),'medicall.csv')
-            print(self.base_file_path, 'here==')
         except Exception as e:
             raise InsuranceException(e, sys)
+
+class DataTransformationConfig:
+    def __init__(self, training_pipeline_config: TrainingPipelineConfig):
+        self.data_transformation_dir = os.path.join(training_pipeline_config.artifact_dir, "data_transformation")
+        self.transform_object_path = os.path.join(self.data_transformation_dir, "transformer", TRANSFORMER_OBJECT_FILE_NAME)
+        self.transformed_train_path = os.path.join(self.data_transformation_dir, "transformed", TRAIN_FILE_NAME.replace("csv", "npz"))
+        self.transformed_test_path = os.path.join(self.data_transformation_dir, "transformed", TEST_FILE_NAME.replace("csv", "npz"))
+        self.target_encoder_path = os.path.join(self.data_transformation_dir, "target_encoder", TARGET_ENCODER_OBJECT_FILE_NAME)
+            
