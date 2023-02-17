@@ -51,13 +51,15 @@ def convert_columns_float(df:pd.DataFrame, exclude_columns:list)->pd.DataFrame:
     except Exception as e:
         raise InsuranceException(e, sys)
 
-def save_object(file_path:str, obj:object)->None:
+def save_object(file_path: str, obj: object) -> None:
     try:
+        logging.info("Entered the save_object method of utils")
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
         with open(file_path, "wb") as file_obj:
             dill.dump(obj, file_obj)
+        logging.info("Exited the save_object method of utils")
     except Exception as e:
-        raise InsuranceException(e, sys)
+        raise InsuranceException(e, sys) from e
 
 
 def load_object(file_path: str,)->object:
@@ -65,7 +67,7 @@ def load_object(file_path: str,)->object:
         if not os.path.exists(file_path):
             raise Exception(f"The file: {file_path} is not available")
         with open(file_path, "rb") as file_obj:
-            return dill.open(file_obj)
+            return dill.load(file_obj)
     except Exception as e:
         raise InsuranceException(e, sys)
 

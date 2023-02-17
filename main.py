@@ -7,8 +7,8 @@ from Insurance.components.data_ingestion import DataIngestion
 from Insurance.components.data_validation import DataValidation
 from Insurance.components.model_trainer import ModelTrainer
 from Insurance.components.model_evaluaion import ModelEvaluation
-
 from Insurance.components.data_transformation import DataTransformation
+from Insurance.components.model_pusher import ModelPusher
 
 def test_logger_and_exception():
     try:
@@ -49,7 +49,13 @@ if __name__ == '__main__':
         model_evaluation_config = config_entity.ModelEvaluationConfig(training_pipeline_config=training_pipeline_config)
         model_eval = ModelEvaluation(model_evaluation_config=model_evaluation_config, data_ingestion_artifact=data_ingestion_artifact,
                         data_transformation_artifact=data_transformation_artifact, model_trainer_artifact=model_trainer_artifact)
-
         model_eval_artifact = model_eval.initiate_model_evaluation()
+
+        # Model Pusher
+        model_pusher_config = config_entity.ModelPusherConfig(training_pipeline_config=training_pipeline_config)
+        model_pusher = ModelPusher(model_pusher_config=model_pusher_config, 
+                                   data_transformation_artifact=data_transformation_artifact,
+                                   model_trainer_artifact=model_trainer_artifact)
+        model_pusher_artifact = model_pusher.initiate_model_pusher()
     except Exception as e:
         print(e)
