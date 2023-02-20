@@ -54,28 +54,24 @@ class ModelEvaluation:
             target_encoder = load_object(file_path=target_encoder_path)
 
             # path of current model
-            current_transformer_path = self.data_transformation_artifact.transform_object_path
-            current_model_path = self.model_trainer_artifact.model_path
-            current_target_encoder_path = self.data_transformation_artifact.target_encoder_path
+            current_transformer = load_object(file_path = self.data_transformation_artifact.transform_object_path)
+            current_model  = load_object(file_path=self.model_trainer_artifact.model_path)
+            current_target_encoder = load_object(file_path = self.data_transformation_artifact.target_encoder_path)
 
-            # current model
-            current_transformer = load_object(file_path=current_transformer_path)
-            current_model = load_object(file_path=current_model_path)
-            current_target_encoder = load_object(file_path=current_target_encoder_path)
-
+           
             test_df = pd.read_csv(self.data_ingestion_artifact.test_file_path)
             target_df = test_df[TARGET_COLUMN]
             y_true = target_df
 
             input_feature_name = list(transformer.feature_names_in_)
             for i in input_feature_name:
-                if test_df[i].dtypes == 'O':
+                if test_df[i].dtypes == 'object':
                     test_df[i] = target_encoder.fit_transform(test_df[i])
 
             input_arr = transformer.transform(test_df[input_feature_name])
             y_pred = model.predict(input_arr)
 
-            input_arr = current_transformer.tranform(test_df[input_feature_name])
+            input_arr = current_transformer.transform(test_df[input_feature_name])
             current_y_pred = current_model.predict(input_arr)
         
             previous_mdoel_score = r2_score(y_true, y_pred) # accuracy of old model 
