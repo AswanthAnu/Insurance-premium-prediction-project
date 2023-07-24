@@ -1,1 +1,1 @@
-# Insurance-premium-prediction-project(On going)
+# Insurance-premium-prediction-project
